@@ -1,0 +1,50 @@
+import React__default, { forwardRef, useEffect } from 'react';
+import styled from 'styled-components';
+import { system } from 'styled-system';
+import { get } from '../constants.js';
+import sx from '../sx.js';
+import { useRefObjectAsForwardedRef } from '../hooks/useRefObjectAsForwardedRef.js';
+
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+const hoverColor = system({
+  hoverColor: {
+    property: 'color',
+    scale: 'colors'
+  }
+});
+const StyledLink = styled.a.withConfig({
+  displayName: "Link__StyledLink",
+  componentId: "sc-14289xe-0"
+})(["color:", ";text-decoration:", ";&:hover{text-decoration:", ";", ";}&:is(button){display:inline-block;padding:0;font-size:inherit;white-space:nowrap;cursor:pointer;user-select:none;background-color:transparent;border:0;appearance:none;}", ";"], props => props.muted ? get('colors.fg.muted')(props) : get('colors.accent.fg')(props), props => props.underline ? 'underline' : 'none', props => props.muted ? 'none' : 'underline', props => props.hoverColor ? hoverColor : props.muted ? `color: ${get('colors.accent.fg')(props)}` : '', sx);
+const Link = /*#__PURE__*/forwardRef(({
+  as: Component = 'a',
+  ...props
+}, forwardedRef) => {
+  const innerRef = React__default.useRef(null);
+  useRefObjectAsForwardedRef(forwardedRef, innerRef);
+  if (process.env.NODE_ENV !== "production") {
+    /**
+     * The Linter yells because it thinks this conditionally calls an effect,
+     * but since this is a compile-time flag and not a runtime conditional
+     * this is safe, and ensures the entire effect is kept out of prod builds
+     * shaving precious bytes from the output, and avoiding mounting a noop effect
+     */
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+      if (innerRef.current && !(innerRef.current instanceof HTMLButtonElement) && !(innerRef.current instanceof HTMLAnchorElement)) {
+        // eslint-disable-next-line no-console
+        console.error('Error: Found `Link` component that renders an inaccessible element', innerRef.current, 'Please ensure `Link` always renders as <a> or <button>');
+      }
+    }, [innerRef]);
+  }
+  return /*#__PURE__*/React__default.createElement(StyledLink, _extends({
+    as: Component
+  }, props, {
+    // @ts-ignore shh
+    ref: innerRef
+  }));
+});
+Link.displayName = 'Link';
+var Link$1 = Link;
+
+export { Link$1 as default };

@@ -1,0 +1,5 @@
+import { RelativeTimeElement } from '@github/relative-time-element';
+import { ComponentProps } from '../utils/types';
+declare const RelativeTime: import("styled-components").StyledComponent<import("@lit-labs/react").ReactWebComponent<RelativeTimeElement, {}>, any, import("../sx").SxProp, never>;
+export type RelativeTimeProps = ComponentProps<typeof RelativeTime>;
+export default RelativeTime;
