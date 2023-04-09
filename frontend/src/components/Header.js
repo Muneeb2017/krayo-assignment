@@ -1,20 +1,22 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-const Header = () => {
+function Header() {
+  const location = useLocation();
+
   return (
     <div className="header">
       <h1>File Upload And Download</h1>
       <nav>
-        <NavLink activeclassname="active" to="/home" exact={true}>
-          Home
-        </NavLink>
-        <NavLink activeclassname="active" to="/list">
-          Files List
-        </NavLink>
+        {location.pathname !== "/" && (
+          <>
+            <Link to="/home">Home</Link>
+            <Link to="/list">List</Link>
+          </>
+        )}
       </nav>
     </div>
   );
-};
+}
 
 export default Header;
