@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import download from "downloadjs";
 import axios from "axios";
 import { API_URL } from "../utils/constants";
+const token = localStorage.getItem("token");
 
 const FilesList = () => {
   const [filesList, setFilesList] = useState([]);
@@ -10,7 +11,9 @@ const FilesList = () => {
   useEffect(() => {
     const getFilesList = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/getAllFiles`);
+        const { data } = await axios.get(`${API_URL}/getAllFiles`, {
+          headers: { Authorization: `Bearer ${token ? token : ""}` },
+        });
         setErrorMsg("");
         setFilesList(data);
       } catch (error) {
@@ -20,7 +23,7 @@ const FilesList = () => {
 
     getFilesList();
   }, []);
-  const token = localStorage.getItem("token");
+
   const downloadFile = async (id, path, mimetype) => {
     try {
       const result = await axios.get(`${API_URL}/download/${id}`, {

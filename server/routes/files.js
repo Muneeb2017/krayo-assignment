@@ -55,15 +55,51 @@ Router.post(
   }
 );
 
+// Router.get("/getAllFiles", async (req, res) => {
+//   try {
+//     const files = await File.find({});
+//     const sortedByCreationDate = files.sort(
+//       (a, b) => b.createdAt - a.createdAt
+//     );
+//     res.send(sortedByCreationDate);
+//   } catch (error) {
+//     res.status(400).send("Error while getting list of files. Try again later.");
+//   }
+// });
+
 Router.get("/getAllFiles", async (req, res) => {
   try {
-    const files = await File.find({});
-    const sortedByCreationDate = files.sort(
-      (a, b) => b.createdAt - a.createdAt
-    );
-    res.send(sortedByCreationDate);
+    if (!req.headers.authorization) {
+      throw new Error("Unauthorized");
+    }
+    const token = req.headers.authorization?.split(" ")[1];
+
+    const verification = await tokenVerification(token);
+    if (verification && verification.exp > Math.floor(Date.now() / 1000)) {
+      const files = await File.find({});
+      console.log(files);
+      const fileData = files.map((file) => ({
+        _id: file._id,
+        title: file.title,
+        description: file.description,
+        file_path: file.file_path,
+        filename: file.filename,
+        mimetype: file.file_mimetype,
+        createdAt: file.createdAt,
+        updatedAt: file.updatedAt,
+      }));
+      res.send(fileData);
+    } else {
+      throw new Error("Unauthorized");
+    }
   } catch (error) {
-    res.status(400).send("Error while getting list of files. Try again later.");
+    if (error.message == "Unauthorized") {
+      res.status(401).send("Unauthorized");
+    } else {
+      res
+        .status(400)
+        .send("Error while getting list of files. Try again later.");
+    }
   }
 });
 

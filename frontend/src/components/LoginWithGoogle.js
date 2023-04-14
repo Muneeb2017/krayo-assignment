@@ -55,16 +55,16 @@ const Loginwithgoogle = ({ isLoggedin, setLoggedin }) => {
 
   return (
     <>
-      {isLoggedin ? (
+      {/* {isLoggedin ? (
         <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <GoogleLogin
-          onSuccess={handleSuccess}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
-      )}
+      ) : ( */}
+      <GoogleLogin
+        onSuccess={handleSuccess}
+        onError={() => {
+          console.log("Login Failed");
+        }}
+      />
+      {/* )} */}
     </>
   );
 };
