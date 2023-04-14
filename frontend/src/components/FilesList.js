@@ -20,14 +20,15 @@ const FilesList = () => {
 
     getFilesList();
   }, []);
-
+  const token = localStorage.getItem("token");
   const downloadFile = async (id, path, mimetype) => {
     try {
       const result = await axios.get(`${API_URL}/download/${id}`, {
+        headers: { Authorization: `Bearer ${token ? token : ""}` },
         responseType: "blob",
       });
       const split = path.split("/");
-      const filename = split[split.length - 1];
+      const filename = split[split.length - 1]; //extracting(last element) file path to be passed to download()
       setErrorMsg("");
       return download(result.data, filename, mimetype);
     } catch (error) {

@@ -3,14 +3,15 @@ const express = require("express");
 const multer = require("multer");
 const File = require("../model/file");
 const Router = express.Router();
+const { tokenVerification } = require("./auth");
 
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, "./files");
+      cb(null, "./files"); //if no error ,1st arg will be null/undefined and second will contain data to be passed
     },
     filename(req, file, cb) {
-      cb(null, `${new Date().getTime()}_${file.originalname}`);
+      cb(null, `${new Date().getTime()}_${file.originalname}`); //get unique file name
     },
   }),
   limits: {
@@ -54,18 +55,6 @@ Router.post(
   }
 );
 
-// Router.get("/getAllFiles", async (req, res) => {
-//   try {
-//     const files = await File.find().sort({ createdAt: "desc" });
-//     res.status(200).json(files);
-//   } catch (error) {
-//     console.error(error);
-//     res
-//       .status(500)
-//       .json({ message: "Error while getting list of files. Try again later." });
-//   }
-// });
-
 Router.get("/getAllFiles", async (req, res) => {
   try {
     const files = await File.find({});
@@ -80,13 +69,26 @@ Router.get("/getAllFiles", async (req, res) => {
 
 Router.get("/download/:id", async (req, res) => {
   try {
-    const file = await File.findById(req.params.id);
-    res.set({
-      "Content-Type": file.file_mimetype,
-    });
-    res.sendFile(path.join(__dirname, "..", file.file_path));
+    if (!req.headers.authorization) {
+      throw new Error("Unauthorized");
+    }
+    const token = req.headers.authorization?.split(" ")[1];
+    const verification = await tokenVerification(token);
+    if (verification && verification.exp > Math.floor(Date.now() / 1000)) {
+      const file = await File.findById(req.params.id);
+      res.set({
+        "Content-Type": file.file_mimetype,
+      });
+      res.sendFile(path.join(__dirname, "..", file.file_path));
+    } else {
+      throw new Error("Unauthorized");
+    }
   } catch (error) {
-    res.status(400).send("Error while downloading file. Try again later.");
+    if (error.message == "Unauthorized") {
+      res.status(401).send("Unauthorized");
+    } else {
+      res.status(400).send("Error while downloading file. Try again later.");
+    }
   }
 });
 

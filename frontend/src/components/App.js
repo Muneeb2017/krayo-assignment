@@ -36,9 +36,12 @@ const App = (props) => {
   };
 
   const updateBorder = (dragState) => {
+    //file dragged over dropRef element
     if (dragState === "over") {
       dropRef.current.style.border = "2px solid #000";
-    } else if (dragState === "leave") {
+    }
+    //drag operation has ended
+    else if (dragState === "leave") {
       dropRef.current.style.border = "2px dashed #e9ebeb";
     }
   };
@@ -111,7 +114,9 @@ const App = (props) => {
             onDragEnter={() => updateBorder("over")}
             onDragLeave={() => updateBorder("leave")}
           >
+          
             {({ getRootProps, getInputProps }) => (
+              //render props pattern 
               <div {...getRootProps({ className: "drop-zone" })} ref={dropRef}>
                 <input {...getInputProps()} />
                 <p>Drag and drop a file OR click here to select a file</p>
